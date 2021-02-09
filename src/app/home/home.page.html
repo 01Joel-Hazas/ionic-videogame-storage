@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title slot="primary">
+      Recordatorio de videojuegos
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="ion-padding">
+    <ion-list>
+      <ion-item *ngFor="let videogame of videogames" (click)="videogameTapped(videogame)">
+        <ion-thumbnail slot="start">
+          <img src="{{videogame.cover}}">
+        </ion-thumbnail>
+        <ion-label> {{videogame.name}}</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
+<ion-toolbar>
+  <img src="assets/img/logo.png" alt="logo">
+  <ion-title slot="primary">
+    Desarrollo de Interfaces
+  </ion-title>
+</ion-toolbar>
