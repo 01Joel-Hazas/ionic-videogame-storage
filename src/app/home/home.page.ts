@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { VideogamecrudService } from './../core/videogamecrud.service';
+import { Router } from '@angular/router';
+import { DetailsPage } from '../details/details.page';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -13,7 +15,8 @@ export class HomePage implements OnInit {
   videogameCover: string;
   videogameDescription: string;
 
-  constructor(private videogamecrudService: VideogamecrudService) { }
+  constructor(private videogamecrudService: VideogamecrudService, private route:
+    Router) { }
   ngOnInit() {
     this.videogamecrudService.read_Videogames().subscribe(data => {
       this.videogames = data.map(e => {
@@ -30,6 +33,11 @@ export class HomePage implements OnInit {
       console.log(this.videogames);
     });
   }
+
+  videogameTapped(videogame) {
+    this.route.navigate(['details', videogame.id]);
+  }
+
   CreateRecord() {
     let record = {};
     record['name'] = this.videogameName;

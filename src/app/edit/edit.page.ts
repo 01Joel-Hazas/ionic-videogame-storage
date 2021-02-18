@@ -36,7 +36,29 @@ export class EditPage implements OnInit {
     this.videogameId = parseInt(this.activatedrouter.snapshot.params['id']);
 
     // Mostrar valores
-   /* this.videogamecrudService.getItem(this.videogameId).then(
+    this.videogamecrudService.read_Videogames().subscribe(data => {
+      let videogames = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          isEdit: false,
+          name: e.payload.doc.data()['name'],
+          genre: e.payload.doc.data()['genre'],
+          date: e.payload.doc.data()['date'],
+          cover: e.payload.doc.data()['cover'],
+          description: e.payload.doc.data()['description']
+        };
+      })
+      console.log(videogames);
+      videogames.forEach(element => {
+          if(element.id == this.videogameId.toString()){
+            this.videogame = element;
+          }
+      });
+    });
+ 
+
+
+/*    this.videogamecrudService.getItem(this.videogameId).then(
       (data: Ivideogame) => {
         this.videogame = data;
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { videogamedbService } from '../core/videogamedbservice.service';
+import { VideogamecrudService } from '../core/videogamecrud.service';
 import { Ivideogame } from '../shared/interfaces';
 import { ToastController } from '@ionic/angular';
 import { FormGroup, FormControl } from '@angular/forms';
@@ -18,16 +18,30 @@ export class DetailsPage implements OnInit {
   constructor(
     private activatedrouter: ActivatedRoute,
     private router: Router,
-    private videogamedbService: videogamedbService,
+    private videogamecrudService: VideogamecrudService,
     public toastController: ToastController
   ) { }
   ngOnInit() {
     this.id = this.activatedrouter.snapshot.params.id;
-    this.videogamedbService.getItem(this.id).then(
-      (data: Ivideogame) => {
-        this.videogame = data;
-      }
-    );
+    this.videogamecrudService.read_Videogames().subscribe(data => {
+      let videogames = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          isEdit: false,
+          name: e.payload.doc.data()['name'],
+          genre: e.payload.doc.data()['genre'],
+          date: e.payload.doc.data()['date'],
+          cover: e.payload.doc.data()['cover'],
+          description: e.payload.doc.data()['description']
+        };
+      })
+      console.log(videogames);
+      videogames.forEach(element => {
+          if(element.id == this.id){
+            this.videogame = element;
+          }
+      });
+    });
     this.videogameForm = new FormGroup({
       name: new FormControl(''),
       genre: new FormControl(''),
@@ -51,7 +65,7 @@ export class DetailsPage implements OnInit {
           icon: 'delete',
           text: 'ACEPTAR',
           handler: () => {
-            this.videogamedbService.remove(id);
+            this.videogamecrudService.delete_Videogame(id);
             this.router.navigate(['home']);
           }
         }, {
