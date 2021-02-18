@@ -4,6 +4,7 @@ import { videogamedbService } from '../core/videogamedbservice.service';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Ivideogame } from '../shared/interfaces';
+import { VideogamecrudService } from '../core/videogamecrud.service';
 @Component({
   selector: 'app-create',
   templateUrl: './create.page.html',
@@ -14,7 +15,7 @@ export class CreatePage implements OnInit {
   videogameForm: FormGroup;
   constructor(
     private router: Router,
-    private videogamedbService: videogamedbService,
+    private videogamedbService: VideogamecrudService,
     public toastController: ToastController
   ) { }
   ngOnInit() {
@@ -55,7 +56,7 @@ export class CreatePage implements OnInit {
     this.videogame = this.videogameForm.value;
     let nextKey = this.videogame.name.trim();
     this.videogame.id = nextKey;
-    this.videogamedbService.setItem(nextKey, this.videogame);
+    this.videogamedbService.create_Videogame(this.videogame);
     console.warn(this.videogameForm.value);
   }
 }

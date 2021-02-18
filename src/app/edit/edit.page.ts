@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { videogamedbService } from '../core/videogamedbservice.service';
+import { VideogamecrudService } from '../core/videogamecrud.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Ivideogame } from '../shared/interfaces';
 import { ToastController } from '@ionic/angular';
@@ -19,7 +19,7 @@ export class EditPage implements OnInit {
   constructor(
     private router: Router,
     private activatedrouter: ActivatedRoute,
-    private videogamedbService: videogamedbService,
+    private videogamecrudService: VideogamecrudService,
     public toastController: ToastController
   ) { }
 
@@ -36,7 +36,7 @@ export class EditPage implements OnInit {
     this.videogameId = parseInt(this.activatedrouter.snapshot.params['id']);
 
     // Mostrar valores
-    this.videogamedbService.getItem(this.videogameId).then(
+   /* this.videogamecrudService.getItem(this.videogameId).then(
       (data: Ivideogame) => {
         this.videogame = data;
 
@@ -49,7 +49,7 @@ export class EditPage implements OnInit {
         });
 
       });
-
+*/
     if (this.videogameForm) {
       this.videogameForm.reset();
     }
@@ -84,7 +84,7 @@ export class EditPage implements OnInit {
   editvideogame() {
     this.videogame = this.videogameForm.value;
     this.videogame.id = this.videogameId.toString();
-    this.videogamedbService.setItem(this.videogame.id, this.videogame);
+    this.videogamecrudService.update_Videogame(this.videogame.id, this.videogame);
     console.warn(this.videogameForm.value);
   }
 }

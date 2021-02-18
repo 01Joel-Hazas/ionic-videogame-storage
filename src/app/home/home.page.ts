@@ -1,60 +1,75 @@
 import { Component, OnInit } from '@angular/core';
-import { Ivideogame } from '../shared/interfaces';
-import { videogamedbService } from '../core/videogamedbservice.service';
-import { Router } from '@angular/router';
-import { DetailsPage } from '../details/details.page';
+import { VideogamecrudService } from './../core/videogamecrud.service';
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html'
+  templateUrl: 'home.page.html',
+  styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
-  public videogames: Ivideogame[];
-  videogamesinit: Ivideogame[] = [{
-    id: '1',
-    name: 'Dark Souls',
-    genre: 'Rol de acción',
-    date: '2011-2012',
-    cover:
-      'assets/img/darksouls.jpg',
-    description: "Dark Souls es un RPG de acción en tercera persona, que se caracteriza por una atmósfera oscura y una dificultad muy por encima de los estándares actuales. El juego recibió excelentes críticas debido a su jugabilidad desafiante, su atmósfera absorbente, sus controles prácticos y a su innovador modo multijugador, la mayoría de estos aspectos importados de su predecesor espiritual Demon's Souls."
-  },
-  {
-    id: '2',
-    name: 'Bloodborne',
-    genre: 'ARPG',
-    date: '2015',
-    cover:
-      'assets/img/bloodborne.jpg',
-    description: "El juego tiene lugar en la ciudad gótica decrépita de Yharnam, conocida por sus avances médicos basados en el uso de la sangre como principal elemento.3​ Con los años, muchos peregrinos viajaron a la ciudad en busca del remedio para curar sus aflicciones. El jugador, por razones desconocidas, emprende el viaje a Yharnam buscando una poderosa sangre conocida como «Sangre pálida» que más tarde descubriremos, proviene de unos seres adorados como dioses apodados los grandes, cuyo diseño parece inspirado en las criaturas del escritor H. P. Lovecraft. "
+  videogames: any;
+  videogameName: string;
+  videogameGenre: string;
+  videogameDate: string;
+  videogameCover: string;
+  videogameDescription: string;
+
+  constructor(private videogamecrudService: VideogamecrudService) { }
+  ngOnInit() {
+    this.videogamecrudService.read_Videogames().subscribe(data => {
+      this.videogames = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          isEdit: false,
+          name: e.payload.doc.data()['name'],
+          genre: e.payload.doc.data()['genre'],
+          date: e.payload.doc.data()['date'],
+          cover: e.payload.doc.data()['cover'],
+          description: e.payload.doc.data()['description']
+        };
+      })
+      console.log(this.videogames);
+    });
   }
-  ]
-  constructor(private videogamedbService: videogamedbService, private route:
-    Router) { }
-  ngOnInit(): void {
-    // If the database is empty set initial values
-    this.inicialization();
-  }
-  ionViewDidEnter() {
-    // Remove elements if it already has values
-    if (this.videogames !== undefined) {
-      this.videogames.splice(0);
-    }
-    this.retrieveValues();
-  }
-  inicialization() {
-    if (this.videogamedbService.empty()) {
-      this.videogamesinit.forEach(videogame => {
-        this.videogamedbService.setItem(videogame.id, videogame);
+  CreateRecord() {
+    let record = {};
+    record['name'] = this.videogameName;
+    record['genre'] = this.videogameGenre;
+    record['date'] = this.videogameDate;
+    record['cover'] = this.videogameCover;
+    record['description'] = this.videogameDescription;
+    this.videogamecrudService.create_Videogame(record).then(resp => {
+      this.videogameName = "";
+      this.videogameGenre = "";
+      this.videogameDate = "";
+      this.videogameCover = "";
+      this.videogameDescription = "";
+      this.videogameDate = "";
+      console.log(resp);
+    })
+      .catch(error => {
+        console.log(error);
       });
-    }
   }
-  retrieveValues() {
-    // Retrieve values
-    this.videogamedbService.getAll().then(
-      (data) => this.videogames = data
-    );
+  RemoveRecord(rowID) {
+    this.videogamecrudService.delete_Videogame(rowID);
   }
-  videogameTapped(videogame) {
-    this.route.navigate(['details', videogame.id]);
+  EditRecord(record) {
+
+    record.isEdit = true;
+    record.EditName = record.Name;
+    record.EditGenre = record.Genre;
+    record.EditDate = record.Date;
+    record.EditCover = record.Cover;
+    record.EditDescription = record.Description;
+  }
+  UpdateRecord(recordRow) {
+    let record = {};
+    record['name'] = recordRow.EditName;
+    record['genre'] = recordRow.EditGenre;
+    record['date'] = recordRow.EditDate;
+    record['cover'] = recordRow.EditCover;
+    record['descrition'] = recordRow.EditDescription;
+    this.videogamecrudService.update_Videogame(recordRow.id, record);
+    recordRow.isEdit = false;
   }
 }

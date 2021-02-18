@@ -1,28 +1,87 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title slot="primary">
+    <ion-title>
       Recordatorio de videojuegos
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  <div class="ion-padding">
-    <ion-list>
-      <ion-item *ngFor="let videogame of videogames" (click)="videogameTapped(videogame)">
-        <ion-thumbnail slot="start">
-          <img src="{{videogame.cover}}">
-        </ion-thumbnail>
-        <ion-label> {{videogame.name}}</ion-label>
-      </ion-item>
-    </ion-list>
-  </div>
+<ion-content padding>
+
+  <ion-card *ngFor="let item of videogames">
+    <span *ngIf="!item.isEdit; else elseBlock">
+      <img src="{{item.cover}} ">
+      <ion-card-header>
+        <ion-card-title>{{item.name}} : {{item.genre}} </ion-card-title>
+        <ion-card-subtitle>Año: {{item.date}}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-label>{{item.description}}</ion-label>
+        <ion-button shape="round" color="secondary" size="small" (click)="EditRecord(item)">
+
+          <ion-icon size="small" slot="icon-only" name="create">
+            </ion-icon>
+
+        </ion-button>
+
+        <ion-button shape="round" color="danger" size="small" (click)="RemoveRecord(item.id)">
+
+          <ion-icon size="small" slot="icon-only" name="trash">
+            </ion-icon>
+
+        </ion-button>
+      </ion-card-content>
+    </span>
+    <ng-template #elseBlock>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                Editar
+              </ion-col>
+              <ion-col>
+                <ion-button fill="clear" color="medium" size="small" (click)="item.isEdit = false">
+                  Cancel
+                </ion-button>
+              </ion-col>
+              <ion-col>
+                <ion-button fill="outline" color="success" size="small" (click)="UpdateRecord(item)">
+                  Update
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label><strong>Título</strong></ion-label>
+          <ion-input type="text" [(ngModel)]="item.EditName"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label><strong>Género</strong></ion-label>
+
+          <ion-input type="text" [(ngModel)]="item.EditGenre">
+            </ion-input>
+
+        </ion-item>
+        <ion-item>
+          <ion-label><strong>Fecha</strong></ion-label>
+          <ion-input type="text" [(ngModel)]="item.EditDate"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label><strong>Portada</strong></ion-label>
+
+
+          <ion-input type="text" [(ngModel)]="item.EditCover">
+            </ion-input>
+
+        </ion-item>
+        <ion-item>
+          <ion-label><strong>Descripción</strong></ion-label>
+          <ion-input type="text" [(ngModel)]="item.EditDescription"></ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ng-template>
+  </ion-card>
 </ion-content>
-<ion-toolbar>
-  <img src="assets/img/logo.png" alt="logo">
-  <ion-title slot="primary">
-    Desarrollo de Interfaces
-  </ion-title>
-</ion-toolbar>
